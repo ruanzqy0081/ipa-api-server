@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
+
 type Theme = "light" | "dark";
+
 
 interface ThemeContextType {
   theme: Theme;
@@ -8,13 +10,16 @@ interface ThemeContextType {
   switchable: boolean;
 }
 
+
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+
 
 interface ThemeProviderProps {
   children: React.ReactNode;
   defaultTheme?: Theme;
   switchable?: boolean;
 }
+
 
 export function ThemeProvider({
   children,
@@ -24,23 +29,22 @@ export function ThemeProvider({
   const [theme, setTheme] = useState<Theme>(() => {
     if (switchable) {
       const stored = localStorage.getItem("theme");
-      return (stored as Theme) || defaultTheme;
+      return "light";
     }
     return defaultTheme;
   });
 
+
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
+    root.classList.remove("dark");
+
 
     if (switchable) {
       localStorage.setItem("theme", theme);
     }
   }, [theme, switchable]);
+
 
   const toggleTheme = switchable
     ? () => {
@@ -48,12 +52,14 @@ export function ThemeProvider({
       }
     : undefined;
 
+
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme, switchable }}>
       {children}
     </ThemeContext.Provider>
   );
 }
+
 
 export function useTheme() {
   const context = useContext(ThemeContext);
