@@ -1,8 +1,11 @@
 import { useAuth } from "@/_core/hooks/useAuth";
+import { useEffect } from "react";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { Streamdown } from 'streamdown';
+
 
 /**
  * All content in this page are only for example, replace with your own feature implementation
@@ -12,9 +15,29 @@ export default function Home() {
   // The userAuth hooks provides authentication state
   // To implement login/logout functionality, simply call logout() or redirect to getLoginUrl()
   let { user, loading, error, isAuthenticated, logout } = useAuth();
+  const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      setLocation("/login");
+    } else if (!loading && isAuthenticated) {
+      setLocation("/dashboard");
+    }
+  }, [loading, isAuthenticated, setLocation]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin h-8 w-8 text-primary" />
+      </div>
+    );
+  }
+
+
 
   // If theme is switchable in App.tsx, we can implement theme toggling like this:
   // const { theme, toggleTheme } = useTheme();
+
 
   return (
     <div className="min-h-screen flex flex-col">
